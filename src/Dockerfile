@@ -2,7 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/runtime:3.1-alpine AS base
 
-COPY ["bin/Release/netcoreapp3.1", "."]
+COPY ["artifacts", "."]
 
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 
