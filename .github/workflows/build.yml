@@ -40,9 +40,9 @@ jobs:
     - name: Set APP_VERSION based on repo w/MinVer
       run: |
         dotnet tool install --global GitVersion.Tool --version 5.*
-        TEMP_SEMVAR=$(dotnet-gitversion -showvariable FullSemVer)
+        TEMP_SEMVAR=$(dotnet-gitversion -showvariable SemVer)
         TEMP_SHA=$(dotnet-gitversion -showvariable ShortSha)
-        APP_VERSION=$TEMP-SEMVER-$TEMP_SHA
+        APP_VERSION=$TEMP_SEMVER-$TEMP_SHA
 
         echo "Adding version to GITHUB_ENV: APP_VERSION=$APP_VERSION"
         echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
