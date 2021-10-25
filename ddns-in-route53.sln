@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.11
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ddns-in-route53", "src\ddns-in-route53.csproj", "{B226C0DB-D743-4A5A-ABAA-2E4A6EB98905}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{9B23A33B-210F-406C-AA23-F9FD53D6A8B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B23A33B-210F-406C-AA23-F9FD53D6A8B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B23A33B-210F-406C-AA23-F9FD53D6A8B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B226C0DB-D743-4A5A-ABAA-2E4A6EB98905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B226C0DB-D743-4A5A-ABAA-2E4A6EB98905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B226C0DB-D743-4A5A-ABAA-2E4A6EB98905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B226C0DB-D743-4A5A-ABAA-2E4A6EB98905}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {162CD996-ECF7-4C4D-8AC2-8CDB9D778215}
+	EndGlobalSection
+EndGlobal

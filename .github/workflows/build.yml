@@ -1,0 +1,99 @@
+name: Continuous Deployment
+
+on: 
+  workflow_dispatch: # a button will appear in GitHub Action UI to trigger the build
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+     
+    steps:    
+    # Prereqs ----------------------------------------------------------------------------------------------- #
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET Core SDK - 3.1
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '3.1.x'
+
+    - name: Setup .NET Core SDK - 2.1
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: '2.1.815'
+
+    - name: Cache ~/.nuget/packages
+      uses: actions/cache@v2
+      with:
+        path: |
+            ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Set shell script permissions
+      run: |
+        chmod +x ./build.sh        
+
+    - name: Set APP_VERSION based on repo w/MinVer
+      run: |
+        dotnet tool install --global GitVersion.Tool --version 5.*
+        TEMP_SEMVAR=$(dotnet-gitversion -showvariable FullSemVer)
+        TEMP_SHA=$(dotnet-gitversion -showvariable ShortSha)
+        APP_VERSION=$TEMP-SEMVER-$TEMP_SHA
+
+        echo "Adding version to GITHUB_ENV: APP_VERSION=$APP_VERSION"
+        echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+
+    - name: Login to GitHub Docker Registry
+      run: |
+        echo "${{ github.token }}" | docker login https://docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+    # ------------------------------------------------------------------------------------------------------- #
+
+    # Build, test and package ------------------------------------------------------------------------------- #
+    - name: Build, test, and package with Nuke
+      run: |
+        ./build.sh publish        
+    
+    - name: Build Docker Image
+      env:
+        GHDR_IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/ddns-in-route53:${{ env.APP_VERSION }}
+        LOCAL_IMAGE_NAME: ddns-in-route53:${{ env.APP_VERSION }}
+      run: |
+        echo "GHDR_IMAGE_NAME=${{ env.GHDR_IMAGE_NAME }}" >> $GITHUB_ENV
+        echo "LOCAL_IMAGE_NAME=${{ env.LOCAL_IMAGE_NAME }}" >> $GITHUB_ENV
+        docker build --file ./src/Server/Dockerfile --tag ${{ env.GHDR_IMAGE_NAME }} --tag ${{ env.ECR_IMAGE_NAME }} --tag ${{ env.LOCAL_IMAGE_NAME }} .        
+    # ------------------------------------------------------------------------------------------------------- #
+
+
+    # Vulnerability checks ---------------------------------------------------------------------------------- #
+    - name: Scan Docker image w/Snyk
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: ${{ env.LOCAL_IMAGE_NAME }}
+        args: --severity-threshold=high    
+    # ------------------------------------------------------------------------------------------------------- #
+
+
+    # Publish ----------------------------------------------------------------------------------------------- #
+    - name: Publish Docker image to GitHub Container Registry
+      run: |        
+        docker push ${{ env.GHDR_IMAGE_NAME }}
+
+
+    - name: Publish artifact to GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        files: artifacts.zip
+        tag_name: ${{ env.APP_VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+    # ------------------------------------------------------------------------------------------------------- #
+
+
+    # Deploy ------------------------------------------------------------------------------------------------ #
+    # ------------------------------------------------------------------------------------------------------- #
