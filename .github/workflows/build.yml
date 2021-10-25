@@ -85,6 +85,7 @@ jobs:
     - name: Publish Docker image to GitHub Container Registry
       run: |        
         docker push ${{ env.GHDR_IMAGE_NAME }}
+        docker push ${{ env.GHDR_IMAGE_LATEST }}
 
 
     - name: Publish artifact to GitHub
