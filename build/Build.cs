@@ -34,7 +34,7 @@ class Build : NukeBuild
     AbsolutePath SourceDirectory => RootDirectory / "src";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
-    AbsolutePath ArtifactsArchive => RootDirectory / ".tmp/artifacts.zip";
+    AbsolutePath ArtifactsArchive => RootDirectory / "artifacts.zip";
     AbsolutePath PublishProjectDirectory => SourceDirectory / "src";
 
     Target Clean => _ => _

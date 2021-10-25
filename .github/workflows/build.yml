@@ -60,11 +60,13 @@ jobs:
     - name: Build Docker Image
       env:
         GHDR_IMAGE_NAME: docker.pkg.github.com/${{ github.repository }}/ddns-in-route53:${{ env.APP_VERSION }}
+        GHDR_IMAGE_LATEST: docker.pkg.github.com/${{ github.repository }}/ddns-in-route53:latest
         LOCAL_IMAGE_NAME: ddns-in-route53:${{ env.APP_VERSION }}
       run: |
         echo "GHDR_IMAGE_NAME=${{ env.GHDR_IMAGE_NAME }}" >> $GITHUB_ENV
+        echo "GHDR_IMAGE_LATEST=${{ env.GHDR_IMAGE_LATEST }}" >> $GITHUB_ENV
         echo "LOCAL_IMAGE_NAME=${{ env.LOCAL_IMAGE_NAME }}" >> $GITHUB_ENV
-        docker build --file ./src/Dockerfile --tag ${{ env.GHDR_IMAGE_NAME }} --tag ${{ env.LOCAL_IMAGE_NAME }} .        
+        docker build --file ./src/Dockerfile --tag ${{ env.GHDR_IMAGE_NAME }} --tag ${{ env.GHDR_IMAGE_LATEST }} --tag ${{ env.LOCAL_IMAGE_NAME }} .        
     # ------------------------------------------------------------------------------------------------------- #
 
 
