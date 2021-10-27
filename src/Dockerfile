@@ -2,6 +2,8 @@
 
 FROM mcr.microsoft.com/dotnet/runtime:3.1 AS base
 
+RUN apt-get update && apt-get -y upgrade
+
 COPY ["artifacts", "."]
 
 ENV DOTNET_RUNNING_IN_CONTAINER=true
